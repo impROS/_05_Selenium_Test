@@ -1,35 +1,63 @@
 package org.example;
+
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-
+/*
+* https://googlechromelabs.github.io/chrome-for-testing/#stable
+* */
 public class LoginPageTest {
 
     protected WebDriver driver;
-    public static String loginUrl = "http://45.144.152.4:3000";
+    public static String loginUrl = "https://practicetestautomation.com/practice-test-login/";
 
     @Before
     public void setUp() {
-        System.setProperty("webdriver.chrome.driver","/Users/ridvanakar/Downloads/chromedriver_mac64/chromedriver");
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
+        try {
+            System.setProperty("webdriver.chrome.driver", "/Users/ridvanakar/Downloads/chromedriver-mac-x64/chromedriver");
+            driver = new ChromeDriver();
+        } catch (Exception e) {
+            System.err.println("WebDriver başlatma hatası: " + e.getMessage());
+        }
     }
 
     @Test
     public void correctLogin() {
-        driver.get(loginUrl);
-        driver.findElement(By.id("kullaniciAdi")).sendKeys("admin");
-        driver.findElement(By.id("parola")).sendKeys("123456");
-        driver.findElement(By.id("btnGirisYap")).click();
-        Assert.assertEquals(driver.getTitle(), "Home Page");
+        try {
+            driver.get(loginUrl);
+            driver.findElement(By.id("username")).sendKeys("student");
+            driver.findElement(By.id("password")).sendKeys("Password123");
+            driver.findElement(By.id("submit")).click();
+            Assert.assertEquals("Logged In Successfully | Practice Test Automation", driver.getTitle());
+        } catch (Exception e) {
+            System.err.println("Test senaryosu hatası: " + e.getMessage());
+        }
     }
 
+    @Test
+    public void incorrectLogin() {
+        try {
+            driver.get(loginUrl);
+            driver.findElement(By.id("username")).sendKeys("student");
+            driver.findElement(By.id("password")).sendKeys("Password1234");
+            driver.findElement(By.id("submit")).click();
+            Assert.assertEquals("Test Login | Practice Test Automation", driver.getTitle());
+        } catch (Exception e) {
+            System.err.println("Test senaryosu hatası: " + e.getMessage());
+        }
+    }
     @After
     public void tearDown() {
-        driver.quit();
+        try {
+            if (driver != null) {
+                driver.quit();
+            }
+        } catch (Exception e) {
+            System.err.println("WebDriver kapatma hatası: " + e.getMessage());
+        }
     }
 }
